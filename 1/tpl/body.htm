@@ -1,0 +1,135 @@
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            
+                <style>
+
+                    #ttr td{ vertical-align: middle }
+
+                    .nyos-success{ background-color: green; color: white; padding: 10px; margin-top: 3em; }
+                    .nyos-warn{ background-color: yellow; color: black; padding: 10px; margin-top: 1em;}
+
+                </style>
+
+                <form name="bw" action="" method="post" enctype="multipart/form-data" class="submit send_bw5" 
+                      div_load='ajaxform_res2' 
+                      div_res='ajaxform_res1' 
+                      >
+
+                    <center><h3>{$now_level.name2}</h3></center>
+
+                    <br/>
+                    <br/>
+
+                <table class="table table-striped" id="ttr" >
+
+                    {foreach $now_level as $k2 => $v2 }
+                    {if isset($v2.fname) && isset($v2.ftype)}
+
+                        {if $v2.ftype == 'head' }
+                        <tr>
+                            <th colspan="2" style="text-align:center;" >{$v2.fname}</td>
+                        </tr>
+                        {elseif $v2.ftype == 'string' }
+                        <tr>
+                            <td><label for="{$k2}" >{$v2.fname}{if isset($v2.fobyaz) && $v2.fobyaz == 'da' }&nbsp;<font color="red">*</font>{/if}</label></td>
+                            <td><div class="xform-group"><input style="width:100%" id="{$k2}" name="bw[{$k2}]" type="text" value="{if isset($v2.value) }{$v2.value}{/if}" rel="{$v2.fname}"
+                                    {if isset($v2.fobyaz) && $v2.fobyaz == 'da' }required{/if}
+                                    /></div>
+                                {if isset($v2.comment) }<small>{$v2.comment}</small>{/if}
+                            </td>
+                        </tr>
+                        {elseif $v2.ftype == 'date' }
+                        <tr>
+                            <td><label for="{$k2}" >{$v2.fname}{if isset($v2.fobyaz) && $v2.fobyaz == 'da' }&nbsp;<font color="red">*</font>{/if}</label></td>
+                            <td><div class="xform-group"><input style="width:100%" id="{$k2}" name="bw[{$k2}]" type="date" value="{if isset($v2.value) }{$v2.value}{/if}" rel="{$v2.fname}"
+                                                                {if isset($v2.fobyaz) && $v2.fobyaz == 'da' }required{/if}
+                                                                /></div>
+                                {if isset($v2.comment) }<small>{$v2.comment}</small>{/if}
+                            </td>
+                        </tr>
+                        {elseif $v2.ftype == 'textarea' }
+                        <tr>
+                            <td colspan="2">{$v2.fname}{if isset($v2.fobyaz) && $v2.fobyaz == 'da' }&nbsp;<font color="red">*</font>{/if}<br/>
+                                <textarea style="width:100%" name="bw[{$k2}]"  rel="{$v2.fname}"
+                                          {if isset($v2.fobyaz) && $v2.fobyaz == 'da' }required{/if}
+                                          {if isset($v2.comment) }placeholder="{$v2.comment|escape}"{/if}
+                                          >{if isset($v2.value) }{$v2.value}{/if}</textarea>
+                                
+                            </td>
+                        </tr>                    
+                        {elseif $v2.ftype == 'select' }
+                        <tr>
+                            <td>{$v2.fname}{if isset($v2.fobyaz) && $v2.fobyaz == 'da' }&nbsp;<font color="red">*</font>{/if}</td>
+                            <td>
+                                <select style="width:100%" name="bw[{$k2}]"  rel="{$v2.fname}" 
+                                        {if isset($v2.fobyaz) && $v2.fobyaz == 'da' }required{/if}
+                                        >
+                                    
+                                    {if isset($v2.var1) }
+                                    <option value="var1">{$v2.var1}</option>
+                                    {/if}
+                                    {if isset($v2.var2) }
+                                    <option value="var2">{$v2.var2}</option>
+                                    {/if}
+                                    {if isset($v2.var3) }
+                                    <option value="var3">{$v2.var3}</option>
+                                    {/if}
+                                    {if isset($v2.var4) }
+                                    <option value="var4">{$v2.var4}</option>
+                                    {/if}
+                                    {if isset($v2.var5) }
+                                    <option value="var5">{$v2.var5}</option>
+                                    {/if}
+                                    {if isset($v2.var6) }
+                                    <option value="var6">{$v2.var6}</option>
+                                    {/if}
+                                    {if isset($v2.var7) }
+                                    <option value="var7">{$v2.var7}</option>
+                                    {/if}
+                                    {if isset($v2.var8) }
+                                    <option value="var8">{$v2.var8}</option>
+                                    {/if}
+                                    {if isset($v2.var9) }
+                                    <option value="var9">{$v2.var9}</option>
+                                    {/if}
+                                    {if isset($v2.var10) }
+                                    <option value="var10">{$v2.var10}</option>
+                                    {/if}
+                                    
+                                </select>
+                                {if isset($v2.comment) }<small>{$v2.comment}</small>{/if}
+                            </td>
+                        </tr>                    
+                        {/if}
+
+                    {/if}
+                    {/foreach}
+
+                <tr><td><b>Введите цифры:<font color="red">*</font></b> {$anticod}</td><td><input name="antispam" style="width:98%; text-align:center;" type="text" value="" required /></td></tr>
+                <tr><td colspan="2"><p>Поля помеченные звёздочкой (<font color="red">*</font>) обязательны для заполнения.</p></td></tr>
+                <tr><td colspan="2" align='center' >
+                        <p>
+                            <input name="suba" style="width:70%; text-align:center;" type="submit" value="Отправить" />
+                        <div id="ajaxform_res2" ><img src='/image/load.gif' alt='' border='0' ></div>
+
+                        </p></td></tr>
+
+                </table>                
+
+                    <input name="run_modul" type="hidden" value="{$level}" />
+                    <input name="id" type="hidden" value="{$level}" />
+                    <input name="secret" type="hidden" value="{\Nyos\nyos::creatSecret($level)}" />
+                </form>
+
+
+            </div><!-- end col -->
+
+        </div><!-- end row -->
+        
+        <div id="ajaxform_res1" ></div>
+        
+    </div><!-- end container -->
+</section>
