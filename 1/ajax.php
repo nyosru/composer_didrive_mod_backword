@@ -119,7 +119,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 
                 if (isset(Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api']) && Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api'] == 'send') {
                     require_once( $_SERVER['DOCUMENT_ROOT'] . '/0.site/exe/api_vk/class.php' );
-                    $msg_to_vk = 'Пришло новое сообщение с сайта ' . $vars['logo_name'] . ' ' . PHP_EOL . PHP_EOL;
+                    $msg_to_vk = 'Пришло новое сообщение' . PHP_EOL . PHP_EOL;
 //$msg_to_vk = 'Пришло новое сообщение'.PHP_EOL.PHP_EOL;
                 }
 
