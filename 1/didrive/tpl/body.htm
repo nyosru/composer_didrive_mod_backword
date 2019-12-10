@@ -6,7 +6,7 @@
         
         {# если редактирование, то показываем форму редактирования #}
         
-            {% if get.edit_id is defined and list.data[get.edit_id] is defined %}
+            {#% if get.edit_id is defined and list.data[get.edit_id] is defined %}
 
                 {% include 'vendor/didrive_mod/items/1/didrive/t/body.form_add.htm' %}
 
@@ -15,7 +15,7 @@
                 {% include 'vendor/didrive_mod/items/1/didrive/t/body.form_add.htm' %}
                 {% include 'vendor/didrive_mod/items/1/didrive/t/body.list_items.htm' %}
 
-            {% endif %}
+            {% endif %#}
 
         
     </div>
