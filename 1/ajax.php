@@ -13,9 +13,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
 
 
-
-
-
 if (!empty($_REQUEST['id']) && !empty($_REQUEST['secret']) && \Nyos\nyos::checkSecret($_REQUEST['secret'], $_REQUEST['id']) === true) {
     
 }
@@ -53,8 +50,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 
 //echo '<pre>'; print_r($_REQUEST); echo '</pre>';
 //echo '<pre>'; print_r($vv['mnu'][$_REQUEST['run_modul']); echo '</pre>';
-
-            \f\pa(\Nyos\nyos::$menu[$_REQUEST['run_modul']]);
+//            \f\pa(\Nyos\nyos::$menu[$_REQUEST['run_modul']]);
 
             foreach (\Nyos\nyos::$menu[$_REQUEST['run_modul']] as $k => $v) {
 
@@ -114,21 +110,24 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 //vk_api_token = 2
 //vk_api_send_to_id = 5903492
 //if (isset(\Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_telega1'])) {
-                $msg_to_telega = 'Пришло новое сообщение с сайта ' . $vars['logo_name'] . ' ' . PHP_EOL . PHP_EOL;
+                //$msg_to_telega = 'Пришло новое сообщение с сайта ' . $vars['logo_name'] . ' ' . PHP_EOL . PHP_EOL;
+                $msg_to_telega = 'Пришло новое сообщение с сайта ' . PHP_EOL;
 //}
 
                 if (isset(Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api']) && Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api'] == 'send') {
+
                     require_once( $_SERVER['DOCUMENT_ROOT'] . '/0.site/exe/api_vk/class.php' );
+
                     $msg_to_vk = 'Пришло новое сообщение' . PHP_EOL . PHP_EOL;
 //$msg_to_vk = 'Пришло новое сообщение'.PHP_EOL.PHP_EOL;
                 }
 
                 foreach ($_REQUEST['bw'] as $k => $v) {
+
                     $vars['text'] .= '<tr><td width="30%" >' . ( isset($now_mod[$k]['fname']) ? $now_mod[$k]['fname'] : $k ) . '</td><td>' . $v . '</td></tr>';
 
                     if (isset($msg_to_telega{5})) {
-                        $msg_to_telega .= ' > ' . ( isset($now_mod[$k]['fname']) ? $now_mod[$k]['fname'] : $k )
-                                . PHP_EOL . $v . PHP_EOL . PHP_EOL;
+                        $msg_to_telega .= ( $now_mod[$k]['name_rus'] ?? $k ) . ': ' . $v . PHP_EOL;
                     }
 
                     if (isset($msg_to_vk{5})) {
@@ -158,9 +157,9 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 
                  */
 
-                if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/vendor/nyos/msg/msg.php')) {
-
-                    require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/nyos/msg/msg.php';
+                if (class_exists('\\Nyos\\Msg')) {
+                    // if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/vendor/nyos/msg/msg.php')) {
+                    // require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/nyos/msg/msg.php';
 
                     \Nyos\Msg::sendTelegramm($msg_to_telega, null, 1);
 
@@ -171,10 +170,12 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
                     }
                 }
 
-                $e = \Nyos\mod\backword::sendMailSuper(
-                                isset($vv['now_level']['mailot']{1}) ? $vv['now_level']['mailot'] : '2@uralweb.info'
-                                , $vv['now_level']['mailto']
-                                , 'default', 'Новое письмо с сайта', $vars);
+                if (!empty($vv['now_level']['mailto'])) {
+                    $e = \Nyos\mod\backword::sendMailSuper(
+                                    ( $vv['now_level']['mailot'] ?? '2@uralweb.info')
+                                    , $vv['now_level']['mailto']
+                                    , 'default', 'Новое письмо с сайта', $vars);
+                }
 
                 \Nyos\mod\items::addNewSimple($db, 'backword', $_REQUEST);
 
@@ -211,12 +212,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 }
 
 \f\end2('Повторите отправку формы пожалуйста', false);
-
 die('the end');
-
-
-
-
 
 //sleep(1);
 
