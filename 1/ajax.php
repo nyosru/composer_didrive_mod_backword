@@ -11,9 +11,19 @@ define('IN_NYOS_PROJECT', true);
 require $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
 
+/**
+ * вкл выкл апи вк
+ * 200407 выкл
+ */
+// $run_api_vk = true;
+$run_api_vk = false;
 
 
-if (!empty($_REQUEST['id']) && !empty($_REQUEST['secret']) && \Nyos\nyos::checkSecret($_REQUEST['secret'], $_REQUEST['id']) === true) {
+if (
+        (!empty($_REQUEST['id']) && !empty($_REQUEST['secret']) && \Nyos\nyos::checkSecret($_REQUEST['secret'], $_REQUEST['id']) === true) 
+        || 
+        (!empty($_REQUEST['id']) && !empty($_REQUEST['s']) && \Nyos\nyos::checkSecret($_REQUEST['s'], $_REQUEST['id']) === true)
+    ) {
     
 }
 //
@@ -44,21 +54,28 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
     if (isset($_REQUEST['run_modul']) && isset(\Nyos\nyos::$menu[$_REQUEST['run_modul']])) {
 
         if (
-                ( isset($_REQUEST['antispam']{3}) && ( $_REQUEST['antispam'] == $_SESSION['cash22'] || $_REQUEST['antispam'] == $_SESSION['cash22_old'] ) ) ||
+                (
+                isset($_REQUEST['antispam']{3}) &&
+                isset($_SESSION['cash22']) &&
+                (
+                $_REQUEST['antispam'] == $_SESSION['cash22'] || $_REQUEST['antispam'] == $_SESSION['cash22_old']
+                )
+                ) 
+                ||
+                (
+                isset($_REQUEST['antispam']{3}) && isset($_REQUEST['s']) && \Nyos\Nyos::checkSecret($_REQUEST['s'], $_REQUEST['antispam']) !== false
+                ) 
+                ||
                 ( isset(Nyos\nyos::$menu[$_REQUEST['run_modul']]['check_cifra']) && Nyos\nyos::$menu[$_REQUEST['run_modul']]['check_cifra'] == 'skip' )
         ) {
 
-//echo '<pre>'; print_r($_REQUEST); echo '</pre>';
-//echo '<pre>'; print_r($vv['mnu'][$_REQUEST['run_modul']); echo '</pre>';
-//            \f\pa(\Nyos\nyos::$menu[$_REQUEST['run_modul']]);
+// echo '<pre>'; print_r($_REQUEST); echo '</pre>';
+// echo '<pre>'; print_r($vv['mnu'][$_REQUEST['run_modul']); echo '</pre>';
+// \f\pa(\Nyos\nyos::$menu[$_REQUEST['run_modul']]);
 
             foreach (\Nyos\nyos::$menu[$_REQUEST['run_modul']] as $k => $v) {
 
-                if (isset($v['ftype']{1}) && (
-                        $v['ftype'] == 'string' || $v['ftype'] == 'textarea'
-                        )
-                ) {
-
+                if (isset($v['ftype']{1}) && ( $v['ftype'] == 'string' || $v['ftype'] == 'textarea' )) {
                     if (isset($v['fobyaz']{1})) {
                         if (isset($_REQUEST['bw'][$k]{1})) {
 // $er .= 'заполнено поле <u>'.$v['fname'].'</u><br/>';
@@ -111,10 +128,12 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 //vk_api_send_to_id = 5903492
 //if (isset(\Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_telega1'])) {
                 //$msg_to_telega = 'Пришло новое сообщение с сайта ' . $vars['logo_name'] . ' ' . PHP_EOL . PHP_EOL;
-                $msg_to_telega = 'Пришло новое сообщение с сайта ' . PHP_EOL;
+                $msg_to_telega = 'Сообщение с сайта ' . PHP_EOL;
 //}
 
-                if (isset(Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api']) && Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api'] == 'send') {
+                
+                
+                if ( $run_api_vk === true && isset(Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api']) && Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api'] == 'send') {
 
                     require_once( $_SERVER['DOCUMENT_ROOT'] . '/0.site/exe/api_vk/class.php' );
 
@@ -122,12 +141,14 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 //$msg_to_vk = 'Пришло новое сообщение'.PHP_EOL.PHP_EOL;
                 }
 
+                $now_mod = Nyos\nyos::$menu[$_REQUEST['run_modul']];
+                
                 foreach ($_REQUEST['bw'] as $k => $v) {
 
                     $vars['text'] .= '<tr><td width="30%" >' . ( isset($now_mod[$k]['fname']) ? $now_mod[$k]['fname'] : $k ) . '</td><td>' . $v . '</td></tr>';
 
                     if (isset($msg_to_telega{5})) {
-                        $msg_to_telega .= ( $now_mod[$k]['name_rus'] ?? $k ) . ': ' . $v . PHP_EOL;
+                        $msg_to_telega .= ( $now_mod[$k]['name_rus'] ?? $now_mod[$k]['fname'] ?? $k ) . ': ' . $v . PHP_EOL;
                     }
 
                     if (isset($msg_to_vk{5})) {
@@ -161,13 +182,14 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
                     // if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/vendor/nyos/msg/msg.php')) {
                     // require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/nyos/msg/msg.php';
 
-                    \Nyos\Msg::sendTelegramm($msg_to_telega, null, 1);
+                    \Nyos\Msg::sendTelegramm($msg_to_telega, null, 2);
 
                     for ($e = 1; $e <= 10; $e++) {
                         if (isset($vv['now_level']['send_telega' . $e]{5})) {
                             \Nyos\Msg::sendTelegramm($msg_to_telega, $vv['now_level']['send_telega' . $e]);
                         }
                     }
+                    
                 }
 
                 if (!empty($vv['now_level']['mailto'])) {
@@ -213,6 +235,8 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 
 \f\end2('Повторите отправку формы пожалуйста', false);
 die('the end');
+
+
 
 //sleep(1);
 
@@ -330,7 +354,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 //vk_api_token = 2
 //vk_api_send_to_id = 5903492
 //if (isset(\Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_telega1'])) {
-                $msg_to_telega = 'Пришло новое сообщение с сайта ' . $vars['logo_name'] . ' ' . PHP_EOL . PHP_EOL;
+                $msg_to_telega = 'Сообщение с сайта ' . $vars['logo_name'] . ' ' . PHP_EOL . PHP_EOL;
 //}
 
                 if (isset(Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api']) && Nyos\nyos::$menu[$_REQUEST['run_modul']]['send_vk_api'] == 'send') {
@@ -339,11 +363,15 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'send_ajax') {
 //$msg_to_vk = 'Пришло новое сообщение'.PHP_EOL.PHP_EOL;
                 }
 
+                
+                $now_module = Nyos\nyos::$menu[$_REQUEST['run_modul']];
+                
+                
                 foreach ($_REQUEST['bw'] as $k => $v) {
                     $vars['text'] .= '<tr><td width="30%" >' . ( isset($now_mod[$k]['fname']) ? $now_mod[$k]['fname'] : $k ) . '</td><td>' . $v . '</td></tr>';
 
                     if (isset($msg_to_telega{5})) {
-                        $msg_to_telega .= ' > ' . ( isset($now_mod[$k]['fname']) ? $now_mod[$k]['fname'] : $k )
+                        $msg_to_telega .= ' > ' . ( isset($now_module[$k]['fname']) ? $now_module[$k]['fname'] : $k )
                                 . PHP_EOL . $v . PHP_EOL . PHP_EOL;
                     }
 
@@ -470,6 +498,30 @@ elseif (isset($_REQUEST['action']) && $_REQUEST['action'] == 'action-item' && is
 }
 
 f\end2('Повторите отправку формы пожалуйста', false);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if (1 == 2) {

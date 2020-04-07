@@ -266,7 +266,7 @@ class backword {
 
             $res = self::sendMailServer($from, $to, $tpl, $head, $vars);
 
-            return f\end2('нормуль отправили через сервер', 'ok', array(
+            return \f\end2('нормуль отправили через сервер', 'ok', array(
                 'file' => __FILE__
                 , 'line' => __LINE__
                     ), 'array');
